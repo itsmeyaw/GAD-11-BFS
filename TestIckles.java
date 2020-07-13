@@ -45,12 +45,12 @@ public class TestIckles {
         // Writing Header
         try {
             file = Files.createFile(Path.of("src", yourResultFile));
-            Files.write(file, List.of("INFO! Seed: " + SEED + " Max: " + LEN));
+            Files.write(file, List.of("INFO! Seed: " + SEED + " Max: " + LEN + " Max-Edges: " + NUM_OF_EDGES_TRIALS));
         } catch (FileAlreadyExistsException e) {
             try {
                 Files.delete(Path.of("src", yourResultFile));
                 file = Files.createFile(Path.of("src", yourResultFile));
-                Files.write(file, List.of("INFO! Seed: " + SEED + " Max: " + LEN));
+                Files.write(file, List.of("INFO! Seed: " + SEED + " Max: " + LEN + " Max-Edges: " + NUM_OF_EDGES_TRIALS));
             } catch (IOException f) {
                 f.printStackTrace();
             }
@@ -134,6 +134,7 @@ public class TestIckles {
         System.out.println("Your Artemis Result: " + resArtemis);
         toBePrinted.add("Your Artemis Result: " + resArtemis);
         System.out.println("Time: " + (artemisEnd - artemisStart));
+        if((artemisEnd - artemisStart) >= TIMEOUT) System.out.println("Time limit exceeded");
 
         print("Devil Graph Testing");
         long devilStart = System.currentTimeMillis();
@@ -141,6 +142,7 @@ public class TestIckles {
         long devilEnd = System.currentTimeMillis();
         print("Your Devil Result: " + resDevil);
         System.out.println("Time: " + (devilEnd - devilStart));
+        if((devilEnd - devilStart) >= TIMEOUT) System.out.println("Time limit exceeded");
 
         done();
         System.out.println("\n-------------- DONE --------------");
