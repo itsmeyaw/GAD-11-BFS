@@ -131,12 +131,12 @@ public class TestIckles {
         int resArtemis = cc.countConnectedComponents(artemisGraph);
         long artemisEnd = System.currentTimeMillis();
         print("Your Artemis Result: " + resArtemis);
-        print("Parents in Artemis");
+        print("Parents in Artemis Graph");
         List<Node> artemisParent = artemisGraph.getAllNodes();
         for(int i = 0; i <= 7; i++) {
             Node parent = bfs.getParent(artemisParent.get(i));
             if(parent != null) {
-                print("Node " + i + ": " + parent);
+                print("Node " + i + ": " + parent.getID());
             } else {
                 print("Node " + i + ": no parent");
             }
@@ -149,11 +149,12 @@ public class TestIckles {
         int resDevil = cc.countConnectedComponents(bigOlGraph);
         long devilEnd = System.currentTimeMillis();
         print("Your Devil Result: " + resDevil);
+        print("Parents in Devil Graph");
         List<Node> devilParent = bigOlGraph.getAllNodes();
         for(int i = 0; i <= LEN; i++) {
             Node parent = bfs.getParent(devilParent.get(i));
             if(parent != null) {
-                print("Node " + i + ": " + parent);
+                print("Node " + i + ": " + parent.getID());
             } else {
                 print("Node " + i + ": no parent");
             }
