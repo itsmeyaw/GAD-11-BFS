@@ -1,5 +1,6 @@
 package gad.bfs;
 
+import gad.bfs.Graph.Node;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -125,13 +126,21 @@ public class TestIckles {
         if (friendResult != null) System.out.println("Your friend's file: " + new File(friendResult).getAbsolutePath());
 
         System.out.println("\n-------------- TESTING --------------");
-
         print("Artemis Graph Testing");
         long artemisStart = System.currentTimeMillis();
         int resArtemis = cc.countConnectedComponents(artemisGraph);
         long artemisEnd = System.currentTimeMillis();
-        System.out.println("Your Artemis Result: " + resArtemis);
-        toBePrinted.add("Your Artemis Result: " + resArtemis);
+        print("Your Artemis Result: " + resArtemis);
+        print("Parents in Artemis");
+        List<Node> artemisParent = artemisGraph.getAllNodes();
+        for(int i = 0; i <= 7; i++) {
+            Node parent = bfs.getParent(artemisParent.get(i));
+            if(parent != null) {
+                print("Node " + i + ": " + parent);
+            } else {
+                print("Node " + i + ": no parent");
+            }
+        }
         System.out.println("Time: " + (artemisEnd - artemisStart));
         if((artemisEnd - artemisStart) >= TIMEOUT) System.out.println("Time limit exceeded");
 
@@ -140,6 +149,15 @@ public class TestIckles {
         int resDevil = cc.countConnectedComponents(bigOlGraph);
         long devilEnd = System.currentTimeMillis();
         print("Your Devil Result: " + resDevil);
+        List<Node> devilParent = bigOlGraph.getAllNodes();
+        for(int i = 0; i <= LEN; i++) {
+            Node parent = bfs.getParent(devilParent.get(i));
+            if(parent != null) {
+                print("Node " + i + ": " + parent);
+            } else {
+                print("Node " + i + ": no parent");
+            }
+        }
         System.out.println("Time: " + (devilEnd - devilStart));
         if((devilEnd - devilStart) >= TIMEOUT) System.out.println("Time limit exceeded");
 
