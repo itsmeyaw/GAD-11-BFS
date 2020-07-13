@@ -1,6 +1,7 @@
 package gad.bfs;
 
 import gad.bfs.Graph.Node;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -15,7 +16,7 @@ import java.util.stream.Stream;
 public class TestIckles {
     // FLAGS
     private static final int TIMEOUT = 1000, SEED = 10, LEN = 10000, NUM_OF_EDGES_TRIALS = 11000;
-    private static final String yourResultFile = "myResult.txt", friendResult = null;
+    private static final String yourResultFile = "myResult.txt", friendResult = "myResult2.txt";
 
     // Not FLAGS
     private static BFS bfs;
@@ -102,7 +103,57 @@ public class TestIckles {
         toBePrinted.add(printed);
     }
 
-    private static void done() {
+    private static void compare() {
+        try {
+
+            Iterator<String> myIter = Files.lines(Path.of("src", yourResultFile)).iterator();
+            Iterator<String> friendIter = Files.lines(Path.of("src", friendResult)).iterator();
+
+            // Check Header
+            if (!myIter.next().equals(friendIter.next())) throw new RuntimeException("Different header, exiting!");
+
+            int line = 2;
+
+            // Iterating lins
+            while (myIter.hasNext() && friendIter.hasNext()) {
+                String myString = myIter.next();
+                String friendString = friendIter.next();
+
+                if (!myString.equals(friendString)) {
+                    System.out.println("Different found on line: " + line);
+                    System.out.println("Your: " + myString);
+                    System.out.println("Friend's: " + friendString);
+                }
+
+                line++;
+            }
+
+            int diffCounter = 0;
+
+            if (myIter.hasNext()) {
+                while (myIter.hasNext()) {
+                    myIter.next();
+                    diffCounter++;
+                }
+                System.out.println("Your file has " + diffCounter + " more lines than your friend's file.");
+                return;
+            }
+
+            if (friendIter.hasNext()) {
+                while (friendIter.hasNext()) {
+                    friendIter.next();
+                    diffCounter++;
+                }
+                System.out.println("Your file has " + diffCounter + " less lines than your friend's file.");
+                return;
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void writeFile() {
         try {
             Files.write(file, Stream.concat(Files.lines(file), toBePrinted.stream()).collect(Collectors.toList()));
         } catch (IOException e) {
@@ -133,16 +184,16 @@ public class TestIckles {
         print("Your Artemis Result: " + resArtemis);
         print("Parents in Artemis Graph");
         List<Node> artemisParent = artemisGraph.getAllNodes();
-        for(int i = 0; i <= 7; i++) {
+        for (int i = 0; i <= 7; i++) {
             Node parent = bfs.getParent(artemisParent.get(i));
-            if(parent != null) {
+            if (parent != null) {
                 print("Node " + i + ": " + parent.getID());
             } else {
                 print("Node " + i + ": no parent");
             }
         }
         System.out.println("Time: " + (artemisEnd - artemisStart));
-        if((artemisEnd - artemisStart) >= TIMEOUT) System.out.println("Time limit exceeded");
+        if ((artemisEnd - artemisStart) >= TIMEOUT) System.out.println("Time limit exceeded");
 
         print("Devil Graph Testing");
         long devilStart = System.currentTimeMillis();
@@ -151,18 +202,29 @@ public class TestIckles {
         print("Your Devil Result: " + resDevil);
         print("Parents in Devil Graph");
         List<Node> devilParent = bigOlGraph.getAllNodes();
-        for(int i = 0; i <= LEN; i++) {
+        for (int i = 0; i <= LEN; i++) {
             Node parent = bfs.getParent(devilParent.get(i));
-            if(parent != null) {
+            if (parent != null) {
                 print("Node " + i + ": " + parent.getID());
             } else {
                 print("Node " + i + ": no parent");
             }
         }
         System.out.println("Time: " + (devilEnd - devilStart));
-        if((devilEnd - devilStart) >= TIMEOUT) System.out.println("Time limit exceeded");
+        if ((devilEnd - devilStart) >= TIMEOUT) System.out.println("Time limit exceeded");
 
-        done();
+        System.out.println("\n--------- WRITING FILE -----------");
+        writeFile();
+        System.out.println("Done writing");
+
+        System.out.println("\n----------- COMPARING ------------");
+        if (friendResult != null) {
+            compare();
+            System.out.println("Done comparing");
+        } else {
+            System.out.println("friendResult is null, skipping...");
+        }
+
         System.out.println("\n-------------- DONE --------------");
     }
 }
