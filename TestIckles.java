@@ -28,8 +28,7 @@ public class TestIckles {
     static final class ResultButItWritesFile implements Result {
         @Override
         public void visit(int node) {
-            System.out.println("Visited node " + node);
-            toBePrinted.add("Visited node " + node);
+            print("Visited node " + node);
         }
     }
 
