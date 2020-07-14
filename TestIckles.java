@@ -17,6 +17,7 @@ public class TestIckles {
     // FLAGS
     private static final int TIMEOUT = 1000, SEED = 10, LEN = 10000, NUM_OF_EDGES_TRIALS = 11000;
     private static final String yourResultFile = "myResult.txt", friendResult = "myResult2.txt";
+    private static final boolean printDot = false;
 
     // Not FLAGS
     private static BFS bfs;
@@ -96,6 +97,22 @@ public class TestIckles {
         for (int i = 0; i <= NUM_OF_EDGES_TRIALS; i++) {
             bigOlGraph.addEdge(random.nextInt(LEN + 1), random.nextInt(LEN + 1));
         }
+    }
+
+    // Return dot version of the graph
+    private static String dot(Graph g, String name) {
+        StringBuilder sb = new StringBuilder("digraph " + name + " {\nconcentrate=true");
+        g.getAllNodes().stream()
+                .forEach(node -> {
+                    g.getAllNeighbours(node.getID()).stream().map(Node::getID).forEach(neighbourID -> {
+                        sb.append("\n\t")
+                                .append(node.getID())
+                                .append(" -> ")
+                                .append(neighbourID);
+                    });
+                });
+        sb.append("\n}");
+        return sb.toString();
     }
 
     private static void print(String printed) {
@@ -223,6 +240,14 @@ public class TestIckles {
             System.out.println("Done comparing");
         } else {
             System.out.println("friendResult is null, skipping...");
+        }
+
+        System.out.println("\n--------- PRINTING DOT ----------");
+        if (printDot) {
+            System.out.println(dot(artemisGraph, "artemisGraph"));
+            System.out.println(dot(bigOlGraph, "devilGraph"));
+        } else {
+            System.out.println("PrintDot is false, skipping...");
         }
 
         System.out.println("\n-------------- DONE --------------");
